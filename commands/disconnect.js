@@ -12,6 +12,6 @@ module.exports = {
         // Deletes all the songs from the queue and exits the channel
 		queue.destroy();
 
-        await interaction.reply({ content: 'Goodbye <a:CryingManGif:869960122200383538>', ephemeral: true})
+        await interaction.reply({ content: 'Goodbye <a:CryingManGif:869960122200383538>' })
 	},
 }
