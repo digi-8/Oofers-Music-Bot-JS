@@ -11,7 +11,7 @@ module.exports = {
         // If there is no queue, return
 		if (!queue)
         {
-            await interaction.reply("There are no songs in the queue");
+            await interaction.reply({ content: 'There is no songs in queue', ephemeral: true });
             return;
         }
 

@@ -10,7 +10,7 @@ module.exports = {
 				.setName("search")
 				.setDescription("Searches for a song and plays it")
 				.addStringOption(option =>
-					option.setName("searchterms").setDescription("Search keywords").setRequired(true)
+					option.setName("ytsearch").setDescription("Search keywords").setRequired(true)
 				)
 		)
 		.addSubcommand(subcommand =>

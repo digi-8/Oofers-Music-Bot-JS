@@ -10,7 +10,7 @@ module.exports = {
         // check if there are songs in the queue
         if (!queue || !queue.playing)
         {
-            await interaction.reply("There are no songs in the queue");
+            await interaction.reply({ content: 'There is no songs in queue', ephemeral: true });
             return;
         }
 
