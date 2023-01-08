@@ -24,7 +24,7 @@ module.exports = {
         await interaction.reply({
             embeds: [
                 new EmbedBuilder()
-                    .setDescription(`${currentSong.title} has been skipped!`)
+                    .setDescription(`**[${currentSong.title}](${currentSong.url})** has been skipped!`)
                     .setThumbnail(currentSong.thumbnail)
             ]
         })

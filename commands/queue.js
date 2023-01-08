@@ -3,7 +3,7 @@ const { SlashCommandBuilder, EmbedBuilder } = require("@discordjs/builders")
 module.exports = {
 	data: new SlashCommandBuilder()
         .setName("queue")
-        .setDescription("Shows the first 10 song in queue"),
+        .setDescription("Displays the first 10 song in queue"),
     async execute(interaction) {
         const queue = interaction.client.player.getQueue(interaction.guildId)
 

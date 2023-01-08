@@ -8,7 +8,7 @@ module.exports = {
 		.addSubcommand(subcommand =>
 			subcommand
 				.setName("search")
-				.setDescription("Searches for a song and plays it")
+				.setDescription("Searches for a song and plays the first result")
 				.addStringOption(option =>
 					option.setName("ytsearch").setDescription("Search keywords").setRequired(true)
 				)
@@ -16,7 +16,7 @@ module.exports = {
 		.addSubcommand(subcommand =>
 			subcommand
 				.setName("url")
-				.setDescription("Plays a song from YT URL")
+				.setDescription("Plays a song from Youtube URL")
 				.addStringOption(option => 
                     option.setName("url").setDescription("The song's url").setRequired(true)
                 )
