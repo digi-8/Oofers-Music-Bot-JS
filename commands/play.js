@@ -53,7 +53,7 @@ module.exports = {
 
 
 		} else if (interaction.options.getSubcommand() === "search") {
-            let url = interaction.options.getString("searchterms")
+            let url = interaction.options.getString("ytsearch")
             
             // Search for the song using the discord-player
             const result = await interaction.client.player.search(url, {
