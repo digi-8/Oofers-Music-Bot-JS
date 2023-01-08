@@ -1,5 +1,7 @@
 # Oofers-Music-Bot-JS
 
+Simpel discord music bot I made to learn Javascript :)
+
 # Commands
 
 - play
