@@ -7,7 +7,7 @@ module.exports = {
     async execute(interaction) {
         const queue = interaction.client.player.getQueue(interaction.guildId)
 
-        // check if there are songs in the queue
+        // Checks if there are songs in the queue
         if (!queue || !queue.playing)
         {
             await interaction.reply({ content: 'There is no songs in queue', ephemeral: true });

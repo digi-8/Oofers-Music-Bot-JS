@@ -18,27 +18,31 @@ module.exports = {
 		const queue = interaction.client.player.getQueue(interaction.guildId)
         const loopopt = interaction.options.getString('looping');
         if (loopopt === 'song') {
+            // Checks if there are songs in queue
             if (!queue)
             {
                 await interaction.reply({ content: 'There is no songs in queue', ephemeral: true });
                 return;
             }
+
+            // Sets repeat to current song 
             const success = queue.setRepeatMode( QueueRepeatMode.TRACK);
             await interaction.reply('Looping Song: Enabled');
 
         } else if (loopopt === 'queue') {
-
+            // Checks if there are songs in queue
             if (!queue)
             {
                 await interaction.reply({ content: 'There is no songs in queue', ephemeral: true });
                 return;
             }
-            const success = queue.setRepeatMode( QueueRepeatMode.QUEUE);
 
+            // Sets repeat to the entire queue
+            const success = queue.setRepeatMode( QueueRepeatMode.QUEUE);
             await interaction.reply('Looping Queue: Enabled');
 
         } else if (loopopt === 'disable') {
-
+            // Disables repeating
             const success = queue.setRepeatMode(QueueRepeatMode.OFF);
             await interaction.reply('Looping: Disabled');
 

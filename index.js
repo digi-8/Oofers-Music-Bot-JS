@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 require("dotenv").config();
 
-
+// Intents for Discord Client
 const client = new Client({
 	intents: [
 		GatewayIntentBits.Guilds,
@@ -14,6 +14,7 @@ const client = new Client({
 	],
 });
 
+// Options for the player
 client.player = new Player(client, {
 	ytdlOptions: {
 		quality: "highestaudio",
