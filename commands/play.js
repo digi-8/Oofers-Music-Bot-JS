@@ -18,7 +18,15 @@ module.exports = {
 				.setName("url")
 				.setDescription("Plays a song from Youtube URL")
 				.addStringOption(option => 
-                    option.setName("url").setDescription("The song's url").setRequired(true)
+                    option.setName("url").setDescription("The song's URL").setRequired(true)
+                )
+		)
+        .addSubcommand(subcommand =>
+			subcommand
+				.setName("playlist")
+				.setDescription("Plays a playlist from Youtube URL")
+				.addStringOption(option =>
+                    option.setName("url").setDescription("The playlist's URL").setRequired(true)
                 )
 		),
     async execute(interaction) {
@@ -41,10 +49,9 @@ module.exports = {
                 searchEngine: QueryType.YOUTUBE_VIDEO
             })
 
-            // Finish if there was no results
-            if (result.tracks.length === 0) {
+            // Return if there was no results
+            if (result.tracks.length === 0)
                 return interaction.reply({ content: 'Link not working, try another', ephemeral: true})
-            }
 
             // Add the track to the queue
             const song = result.tracks[0]
@@ -64,7 +71,7 @@ module.exports = {
                 searchEngine: QueryType.AUTO
             })
 
-            // Finish if there was no results
+            // Return if there was no results
             if (result.tracks.length === 0)
                 return interaction.reply({ content: 'No results found', ephemeral: true})
 
@@ -76,7 +83,26 @@ module.exports = {
                 .setThumbnail(song.thumbnail)
                 .setFooter({ text: `Duration: ${song.duration}`})
 
-		}
+		} else if (interaction.options.getSubcommand() === "search") {
+            let url = interaction.options.getString("url")
+
+            // Search for the playlist using the discord-player
+            const result = await interaction.client.player.search(url, {
+                requestedBy: interaction.user,
+                searchEngine: QueryType.YOUTUBE_PLAYLIST
+            })
+
+            // Return if there was no results
+            if (result.tracks.length === 0)
+                return interaction.reply(`No playlists found with ${url}`)
+            
+            // Add all the videos to the queue
+            const playlist = result.playlist
+            await queue.addTracks(result.tracks)
+            embed
+                .setDescription(`**${result.tracks.length} songs from [${playlist.title}](${playlist.url})** have been added to the Queue`)
+                .setThumbnail(playlist.thumbnail)
+        }
 
         // If the bot is not plaing, play next song
         if (!queue.playing) await queue.play();
