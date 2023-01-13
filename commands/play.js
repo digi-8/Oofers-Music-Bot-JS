@@ -22,26 +22,29 @@ module.exports = {
                 )
 		),
     async execute(interaction) {
-
+        // Checks if user sending message is in a voice channel
         if (!interaction.member.voice.channel) return interaction.reply({ content: 'You are not in a voice channel', ephemeral: true});
 
         const queue = await interaction.client.player.createQueue(interaction.guild);
 
+        // If the bot is not connected, connect to the users channel
         if (!queue.connection) await queue.connect(interaction.member.voice.channel);		
         
+
         const embed = new EmbedBuilder();
 		if (interaction.options.getSubcommand() === "url") {
             let url = interaction.options.getString("url")
             
-            // Search for the song using the discord-player
+            // Check if URL is a yt video using the discord-player
             const result = await interaction.client.player.search(url, {
                 requestedBy: interaction.user,
                 searchEngine: QueryType.YOUTUBE_VIDEO
             })
 
-            // finish if no tracks were found
-            if (result.tracks.length === 0)
+            // Finish if there was no results
+            if (result.tracks.length === 0) {
                 return interaction.reply({ content: 'Link not working, try another', ephemeral: true})
+            }
 
             // Add the track to the queue
             const song = result.tracks[0]
@@ -61,7 +64,7 @@ module.exports = {
                 searchEngine: QueryType.AUTO
             })
 
-            // finish if no tracks were found
+            // Finish if there was no results
             if (result.tracks.length === 0)
                 return interaction.reply({ content: 'No results found', ephemeral: true})
 
@@ -75,8 +78,10 @@ module.exports = {
 
 		}
 
+        // If the bot is not plaing, play next song
         if (!queue.playing) await queue.play();
 
+        // Sends a message with correct embed
         await interaction.reply({
             embeds: [embed]
         })

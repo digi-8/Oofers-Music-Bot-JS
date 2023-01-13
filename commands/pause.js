@@ -8,7 +8,7 @@ module.exports = {
         // Get the queue for the server
 		const queue = interaction.client.player.getQueue(interaction.guildId)
 
-        // Pause the current song
+        // Pauses the current song
 		queue.setPaused(true);
 
         await interaction.reply("Pausing song...")
