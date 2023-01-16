@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType } = require('discord.js');
 const { QueryType } = require('discord-player');
 
 module.exports = {
@@ -37,8 +37,37 @@ module.exports = {
 
         // If the bot is not connected, connect to the users channel
         if (!queue.connection) await queue.connect(interaction.member.voice.channel);		
-        
 
+        // Buttons for media control
+        const controls = new ActionRowBuilder()
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId('pp')
+                    .setLabel(':play_pause:')
+                    .setStyle(ButtonStyle.Secondary),
+                new ButtonBuilder()
+                    .setCustomId('skip')
+                    .setLabel(':track_next:')
+                    .setStyle(ButtonStyle.Secondary),
+            );
+
+        // const collector = interaction.channel.createMessageComponentCollector({ componentType: ComponentType.Button, time: 180000 });
+        // collector.on('collect', async i => {
+        //     if (i.customId === 'pp') {
+        //         if (!queue.playing) {
+        //             await command.execute("./resume.js");
+        //         } else if (queue.playing) {
+        //             await command.execute("./pause.js");
+        //         }
+        //     }
+        //     if (i.customId === 'Split') {
+        //         await i.reply({ content: 'This is Split', ephemeral: true });
+        //     }
+        // });
+        // collector.on('end', collected => {
+        //     console.log(`Collected ${collected.size} interactions.`);
+        // });
+        
         const embed = new EmbedBuilder();
 		if (interaction.options.getSubcommand() === "url") {
             let url = interaction.options.getString("url")
