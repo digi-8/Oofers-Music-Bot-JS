@@ -112,7 +112,7 @@ module.exports = {
                 .setThumbnail(song.thumbnail)
                 .setFooter({ text: `Duration: ${song.duration}`})
 
-		} else if (interaction.options.getSubcommand() === "search") {
+		} else if (interaction.options.getSubcommand() === "playlist") {
             let url = interaction.options.getString("url")
 
             // Search for the playlist using the discord-player
