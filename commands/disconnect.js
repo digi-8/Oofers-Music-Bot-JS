@@ -1,4 +1,5 @@
 const { SlashCommandBuilder } = require("@discordjs/builders")
+const { useMasterPlayer } = require("discord-player");
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -6,11 +7,12 @@ module.exports = {
         .setDescription("Disconnects the bot from the channel and clears queue."),
     async execute(interaction) {
 
+        const player = useMasterPlayer();
         // Get the current queue
-		const queue = interaction.client.player.getQueue(interaction.guildId)
+		const queue = player.nodes.get(interaction.guildId)
 
         // Deletes all the songs from the queue and exits the channel
-		queue.destroy();
+		queue.delete();
 
         await interaction.reply({ content: 'Goodbye <a:CryingManGif:869960122200383538>' })
 	},

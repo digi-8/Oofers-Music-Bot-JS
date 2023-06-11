@@ -15,7 +15,7 @@ const client = new Client({
 });
 
 // Options for the player
-client.player = new Player(client, {
+const player = new Player(client, {
 	ytdlOptions: {
 		quality: "highestaudio",
 		highWaterMark: 1 << 25

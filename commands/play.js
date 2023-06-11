@@ -1,5 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType } = require('discord.js');
-const { QueryType } = require('discord-player');
+const { QueryType, useMasterPlayer } = require('discord-player');
+const { YouTubeExtractor } = require('@discord-player/extractor');
+
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -29,28 +31,31 @@ module.exports = {
                     option.setName("url").setDescription("The playlist's URL").setRequired(true)
                 )
 		),
+
     async execute(interaction) {
-        // Checks if user sending message is in a voice channel
-        if (!interaction.member.voice.channel) return interaction.reply({ content: 'You are not in a voice channel', ephemeral: true});
 
-        const queue = await interaction.client.player.createQueue(interaction.guild);
+        const player = useMasterPlayer()
+		const queue = player.nodes.get(interaction.guildId)
 
-        // If the bot is not connected, connect to the users channel
-        if (!queue.connection) await queue.connect(interaction.member.voice.channel);		
+        await player.extractors.register(YouTubeExtractor, {});
+        
+        const channel = interaction.member.voice.channel;
+        if (!channel) return interaction.reply({ content: 'You are not in a voice channel', ephemeral: true});
 
         // Buttons for media control
-        const controls = new ActionRowBuilder()
-            .addComponents(
-                new ButtonBuilder()
-                    .setCustomId('pp')
-                    .setLabel(':play_pause:')
-                    .setStyle(ButtonStyle.Secondary),
-                new ButtonBuilder()
-                    .setCustomId('skip')
-                    .setLabel(':track_next:')
-                    .setStyle(ButtonStyle.Secondary),
-            );
-
+        // const controls = new ActionRowBuilder()
+        //    .addComponents(
+        //        new ButtonBuilder()
+        //            .setCustomId('pp')
+        //            .setLabel(':play_pause:')
+        //            .setStyle(ButtonStyle.Secondary),
+        //        new ButtonBuilder()
+        //            .setCustomId('skip')
+        //            .setLabel(':track_next:')
+        //            .setStyle(ButtonStyle.Secondary),
+        //    );
+        //
+        // TESTING BUTTONS
         // const collector = interaction.channel.createMessageComponentCollector({ componentType: ComponentType.Button, time: 180000 });
         // collector.on('collect', async i => {
         //     if (i.customId === 'pp') {
@@ -73,7 +78,7 @@ module.exports = {
             let url = interaction.options.getString("url")
             
             // Check if URL is a yt video using the discord-player
-            const result = await interaction.client.player.search(url, {
+            const result = await player.search(url, {
                 requestedBy: interaction.user,
                 searchEngine: QueryType.YOUTUBE_VIDEO
             })
@@ -95,7 +100,7 @@ module.exports = {
             let url = interaction.options.getString("ytsearch")
             
             // Search for the song using the discord-player
-            const result = await interaction.client.player.search(url, {
+            const result = await player.search(url, {
                 requestedBy: interaction.user,
                 searchEngine: QueryType.AUTO
             })
@@ -116,7 +121,7 @@ module.exports = {
             let url = interaction.options.getString("url")
 
             // Search for the playlist using the discord-player
-            const result = await interaction.client.player.search(url, {
+            const result = await player.search(url, {
                 requestedBy: interaction.user,
                 searchEngine: QueryType.YOUTUBE_PLAYLIST
             })
@@ -127,14 +132,21 @@ module.exports = {
             
             // Add all the videos to the queue
             const playlist = result.playlist
-            await queue.addTracks(result.tracks)
+            await queue.addTrack(result.tracks)
             embed
                 .setDescription(`**${result.tracks.length} songs from [${playlist.title}](${playlist.url})** have been added to the Queue`)
                 .setThumbnail(playlist.thumbnail)
         }
 
-        // If the bot is not plaing, play next song
-        if (!queue.playing) await queue.play();
+        player.play(channel, result, {
+            nodeOptions: {
+                metadata: {
+                channel: interaction.channel,
+                client: interaction.guild.members.me,
+                requestedBy: interaction.user,
+                }
+            },
+        });
 
         // Sends a message with correct embed
         await interaction.reply({

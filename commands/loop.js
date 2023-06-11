@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { QueueRepeatMode } = require('discord-player');
+const { useMasterPlayer, useQueue } = require("discord-player");
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -15,7 +15,8 @@ module.exports = {
                     { name: 'Disable', value: 'disable' },
                 )),
     async execute(interaction) {
-		const queue = interaction.client.player.getQueue(interaction.guildId)
+		const player = useMasterPlayer();
+		const queue = player.nodes.get(interaction.guildId)
         const loopopt = interaction.options.getString('looping');
         if (loopopt === 'song') {
             // Checks if there are songs in queue
@@ -26,7 +27,7 @@ module.exports = {
             }
 
             // Sets repeat to current song 
-            const success = queue.setRepeatMode( QueueRepeatMode.TRACK);
+            const success = queue.setRepeatMode(Track);
             await interaction.reply('Looping Song: Enabled');
 
         } else if (loopopt === 'queue') {
@@ -38,12 +39,12 @@ module.exports = {
             }
 
             // Sets repeat to the entire queue
-            const success = queue.setRepeatMode( QueueRepeatMode.QUEUE);
+            const success = queue.setRepeatMode(Queue);
             await interaction.reply('Looping Queue: Enabled');
 
         } else if (loopopt === 'disable') {
             // Disables repeating
-            const success = queue.setRepeatMode(QueueRepeatMode.OFF);
+            const success = queue.setRepeatMode(Off);
             await interaction.reply('Looping: Disabled');
 
         }

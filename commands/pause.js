@@ -1,4 +1,5 @@
 const { SlashCommandBuilder } = require("@discordjs/builders")
+const { useMasterPlayer } = require("discord-player");
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -6,10 +7,11 @@ module.exports = {
         .setDescription("Pauses the current song"),
     async execute(interaction) {
         // Get the queue for the server
-		const queue = interaction.client.player.getQueue(interaction.guildId)
+		const player = useMasterPlayer();
+        const queue = player.nodes.get(interaction.guildId)
 
         // Pauses the current song
-		queue.setPaused(true);
+		queue.node.pause();
 
         await interaction.reply("Pausing song...")
 	},

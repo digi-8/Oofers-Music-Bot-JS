@@ -1,14 +1,17 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("@discordjs/builders")
+const { useMasterPlayer } = require("discord-player");
 
 module.exports = {
 	data: new SlashCommandBuilder()
         .setName("queue")
         .setDescription("Displays the first 10 song in queue"),
     async execute(interaction) {
-        const queue = interaction.client.player.getQueue(interaction.guildId)
+        // Get the queue for the server
+		const player = useMasterPlayer();
+        const queue = player.nodes.get(interaction.guildId)
 
         // Checks if there are songs in the queue
-        if (!queue || !queue.playing)
+        if (!queue || !queue.node.isPlaying)
         {
             await interaction.reply({ content: 'There is no songs in queue', ephemeral: true });
             return;
@@ -20,7 +23,7 @@ module.exports = {
         }).join("\n")
 
         // Get the current song
-        const currentSong = queue.current
+        const currentSong = queue.currentTrack
 
         await interaction.reply({
             embeds: [
